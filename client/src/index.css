@@ -1,0 +1,30 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  background: #f5f5f5ee;
+  color: rgb(0, 140, 255);
+}
+
+.content-container {
+  height: calc(100vh - theme("spacing.20"));
+}
+
+.fondo_1{
+  background-image: url(assets/fondo.jpg);
+  background-repeat: no-repeat;
+  background-size:cover ;
+  background-position-y: -400px;
+}
+.fondo_2{
+  background-image: url(assets/cafe.jpg);
+  background-repeat: no-repeat;
+  background-size:cover ;
+
+}
+.fondo_3{
+  background-image: url(assets/ultimo.jpg);
+  background-repeat: no-repeat;
+  background-size:cover ;
+}
