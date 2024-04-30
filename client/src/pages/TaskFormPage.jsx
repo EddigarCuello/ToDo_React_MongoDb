@@ -21,6 +21,7 @@ export function TaskFormPage() {
 
   const onSubmit = async (data) => {
     try {
+      console.log(params.id)
       if (params.id) {
         updateTask(params.id, {
           ...data,
@@ -35,7 +36,7 @@ export function TaskFormPage() {
 
       // navigate("/tasks");
     } catch (error) {
-      console.log(error, "papadio");
+      console.log(error);
       // window.location.href = "/";
     }
   };
