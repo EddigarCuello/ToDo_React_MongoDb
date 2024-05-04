@@ -1,7 +1,9 @@
 import { useState } from 'react';
 import { getStorage, ref, uploadBytes } from 'firebase/storage';
+import { collection, doc, updateDoc } from 'firebase/firestore';
+import { db } from '../../api/firebase.js'; // Importa la instancia de Firestore desde tu archivo firebase.js
 
-const SubirArchivo = () => {
+export default function SubirArchivo({ taskId }) {
   const [archivo, setArchivo] = useState(null);
   const [cargando, setCargando] = useState(false);
   const [error, setError] = useState(null);
@@ -20,19 +22,26 @@ const SubirArchivo = () => {
       const storage = getStorage();
 
       // Crear una referencia de archivo en Firebase Storage
-      const archivoRef = ref(storage, `archivos/${archivo.name}`);
+      const archivoRef = ref(storage, `archivos_tareas/${taskId}/${archivo.name}`);
 
       // Cargar el archivo a Firebase Storage
       await uploadBytes(archivoRef, archivo);
 
-      setCargando(false);
-      setError(null);
-      setArchivo(null);
+      // Guardar la referencia del archivo en Firestore
+      const tareaRef = doc(db, 'tareas', taskId);
+      await updateDoc(tareaRef, {
+        archivoURL: archivoRef.fullPath // Guarda la ruta del archivo en Firebase Storage
+      });
 
+      // Limpiar el estado y mostrar mensaje de éxito
+      setArchivo(null);
+      setError(null);
       console.log('Archivo cargado exitosamente');
     } catch (error) {
       console.error('Error al cargar el archivo:', error);
       setError('Error al cargar el archivo');
+    } finally {
+      // Restablecer el estado de carga después de completar la operación
       setCargando(false);
     }
   };
@@ -48,13 +57,10 @@ const SubirArchivo = () => {
       <button
         onClick={handleSubirArchivo}
         className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded disabled:opacity-50"
-        disabled={cargando}
       >
-        {cargando ? 'Cargando...' : 'Subir Archivo'}
+        Subir Archivo
       </button>
       {error && <p className="text-red-500 mt-2">{error}</p>}
     </div>
   );
-};
-
-export default SubirArchivo;
+}

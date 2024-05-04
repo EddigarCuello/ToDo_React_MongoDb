@@ -1,21 +1,30 @@
-// Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
-import { getAnalytics } from "firebase/analytics";
-// TODO: Add SDKs for Firebase products that you want to use
-// https://firebase.google.com/docs/web/setup#available-libraries
+import { getStorage, uploadBytes,ref , getDownloadURL} from "firebase/storage";
 
 // Your web app's Firebase configuration
-// For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
-  apiKey: "AIzaSyBaqfKqTBUHNZoaBis3bWQginTpnbFH1so",
-  authDomain: "pending-notes.firebaseapp.com",
-  projectId: "pending-notes",
-  storageBucket: "pending-notes.appspot.com",
-  messagingSenderId: "514195216862",
-  appId: "1:514195216862:web:f45078b1f078faff78a54f",
-  measurementId: "G-QX5NE1B5EN"
+  apiKey: "AIzaSyDhcWVpQTc-mtLpZQ0Fc68Crql9-DzikC4",
+  authDomain: "pending-notes-c1115.firebaseapp.com",
+  projectId: "pending-notes-c1115",
+  storageBucket: "pending-notes-c1115.appspot.com",
+  messagingSenderId: "160433490938",
+  appId: "1:160433490938:web:1f5d8993940ce8b5bcf243"
 };
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
-const analytics = getAnalytics(app);
+export const storage = getStorage(app); // Obtiene una instancia de Firestore
+
+
+export  async function SubirArchivo(file,taskid) {
+  const storageRef = ref(storage, `${taskid}/doc${taskid}`);
+   await uploadBytes(storageRef, file)
+   const url = await getDownloadURL(storageRef)
+  return url;
+}
+
+export async function bajarArchivo(taskid) {
+  const storageRef = ref(storage, `${taskid}/doc${taskid}`);
+  const url = await getDownloadURL(storageRef);
+  return url;
+}

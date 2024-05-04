@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
@@ -6,12 +6,25 @@ import { Button, Card, Input, Label } from "../components/ui";
 import { useTasks } from "../context/tasksContext";
 import { Textarea } from "../components/ui/Textarea";
 import { useForm } from "react-hook-form";
+import {SubirArchivo} from "../api/firebase.js"
+import { string } from "zod";
+//import SubirArchivo from "../components/tasks/Files.jsx"; // Importa el componente SubirArchivo
 dayjs.extend(utc);
 
 export function TaskFormPage() {
   const { createTask, getTask, updateTask } = useTasks();
   const navigate = useNavigate();
   const params = useParams();
+  const [urlArchivo, setUrlArchivo] = useState(""); 
+
+
+  const handleFileInputChange = async (event) => {
+    const file = event.target.files[0];
+    const urlArchivo = await SubirArchivo(file, params.id);
+    setUrlArchivo(urlArchivo); // Establecer la URL del archivo en el estado
+  };
+
+const fechaActualString = dayjs().format('YYYY-MM-DD HH:mm:ss');
   const {
     register,
     setValue,
@@ -21,7 +34,7 @@ export function TaskFormPage() {
 
   const onSubmit = async (data) => {
     try {
-      console.log(params.id)
+      console.log(params.id);
       if (params.id) {
         updateTask(params.id, {
           ...data,
@@ -83,6 +96,15 @@ export function TaskFormPage() {
 
         <Label htmlFor="date">Date</Label>
         <Input type="date" name="date" {...register("date")} />
+
+        {/* Componente SubirArchivo */}
+        {/*<SubirArchivo taskId={params.id} />*/}
+        <div>
+          <input type="file" name="" id="" onChange={handleFileInputChange} />
+        </div>
+        <div>
+          <img src={urlArchivo} alt="" />
+        </div>
         <Button>Save</Button>
       </form>
     </Card>
